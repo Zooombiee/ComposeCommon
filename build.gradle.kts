@@ -37,6 +37,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlin.compiler.get()
+    }
 }
 
 dependencies {
@@ -63,5 +70,7 @@ dependencies {
     api(libs.utilcodex)
     api(libs.bugly)
     api(libs.dialogx)
+
+    api(libs.cn.oaid)
 
 }
