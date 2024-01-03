@@ -1,5 +1,5 @@
 [versions]
-agp = "8.2.0"
+agp = "8.1.0"
 kotlin = "1.9.0"
 kotlin-ksp="1.9.0-1.0.12"
 kotlin-compiler = "1.5.2"
@@ -53,6 +53,7 @@ ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
+material = { group = "androidx.compose.material", name = "material" }
 
 #路由导航
 nav-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "nav-compose" }
@@ -96,7 +97,7 @@ build-ksp ={ id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 [bundles]
 test = [  "androidx-test-ext-junit", "espresso-core", "ui-test-junit4"]
 debug =[ "ui-tooling","ui-test-manifest"]
-compose = ["ui", "ui-graphics", "ui-tooling-preview", "material3", "activity-compose"]
+compose = ["ui", "ui-graphics", "ui-tooling-preview", "material3", "activity-compose","material"]
 lifecycle = ["lifecycle-runtime-ktx", "lifecycle-runtime-compose"]
 activity-core = ["core-ktx"]
 nav-compose = ["nav-compose", "nav-compose-ui"]

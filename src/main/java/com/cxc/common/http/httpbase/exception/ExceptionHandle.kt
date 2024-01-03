@@ -8,6 +8,7 @@ import org.apache.http.conn.ConnectTimeoutException
 import org.json.JSONException
 import retrofit2.HttpException
 import java.net.ConnectException
+import java.util.concurrent.CancellationException
 
 /**
  * 作者　: hegaojian
@@ -48,6 +49,12 @@ object ExceptionHandle {
                     ex = AppException(Error.TIMEOUT_ERROR,e)
                     return ex
                 }
+                //协程取消
+                is CancellationException ->{
+                    ex = AppException(Error.UNKNOWN,"")
+                    return ex
+                }
+
                 is AppException -> return it
 
                 else -> {

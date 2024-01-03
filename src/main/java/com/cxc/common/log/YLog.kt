@@ -11,7 +11,7 @@ import com.cxc.compose_common.BuildConfig
  */
 object YLog {
 
-    var enabled = BuildConfig.IS_DEBUG
+    var enabled = BuildConfig.DEBUG
 
     private enum class LEVEL {
         V, D, I, W, E
