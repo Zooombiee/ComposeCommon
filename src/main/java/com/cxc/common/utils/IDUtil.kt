@@ -7,6 +7,10 @@ import com.cxc.common.log.YLog
 import com.github.gzuliyujiang.oaid.DeviceID
 import com.github.gzuliyujiang.oaid.DeviceIdentifier
 import com.github.gzuliyujiang.oaid.IGetter
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import java.lang.Exception
 
@@ -16,54 +20,74 @@ object IDUtil {
     var deviceID: String? = null
     private const val TAG = "OAID"
 
-     fun getClientId(context: Context): String {
+
+    fun getClientIdAsync(context: Context, scope: CoroutineScope): CompletableDeferred<String> {
+        val deferred = CompletableDeferred<String>()
         try {
             if (deviceID.isNullOrEmpty().not()) {
-                return deviceID?:""
+                deferred.complete(deviceID ?: "")
+                return deferred
             }
             val clientId = DeviceID.getClientId()
             if (clientId.isNullOrEmpty().not()) {
                 deviceID = clientId
-                return clientId
+                deferred.complete(clientId)
+                return deferred
             }
-            synchronized(this){
+
+            scope.launch(Dispatchers.IO) {
                 if (DeviceID.supportedOAID(context)) {
                     DeviceID.getOAID(context, object : IGetter {
                         override fun onOAIDGetComplete(result: String?) {
-                            YLog.d(TAG,"OAIDGetComplete ${result}")
                             deviceID = if (isValid(result)) {
-                                YLog.v(TAG,"is valid ${result}")
                                 result
-                            }else{
-                                YLog.w(TAG,"is not valid ${result}")
-                                DeviceID.getUniqueID(context)
+                            } else {
+                                getUniqueID(context)
                             }
+                            deferred.complete(deviceID ?: "")
                         }
 
                         override fun onOAIDGetError(error: Exception?) {
-                            YLog.d(TAG,"OAIDGetError ${error}")
-                            deviceID = DeviceID.getUniqueID(context)
+                            deviceID = getUniqueID(context)
+                            deferred.complete(deviceID ?: "")
                         }
                     })
                 } else {
-                    return DeviceID.getUniqueID(context)
+                    deferred.complete(getUniqueID(context))
                 }
             }
-            YLog.d(TAG,"oaid 返回 ${deviceID}")
-            return deviceID?:""
-        }catch (e: Exception){
-            return ""
+        } catch (e: Exception) {
+            deferred.complete("")
         }
+
+        return deferred
+
     }
 
-      fun getUniqueID(context: Context): String {
-        return DeviceID.getUniqueID(context)
+    fun getClientId(context: Context): String {
+        return deviceID ?: getUniqueID(context)
     }
 
+    /**
+     * Get unique id.
+     * 在获取不到oaid的情况下 返回这个
+     * @param context Context
+     * @return
+     */
+    fun getUniqueID(context: Context): String {
+        val uniqueID = DeviceID.getUniqueID(context)
+        if (!uniqueID.isNullOrEmpty()) {
+            deviceID = uniqueID
+            return uniqueID
+        }
+        val hardwareId = DeviceID.getAndroidID(context) + DeviceID.getPseudoID()
+        deviceID = hardwareId
+        return hardwareId
+    }
 
 
     private fun isValid(input: String?): Boolean {
         if (input.isNullOrEmpty()) return false
-        return input.replace("-","").all { it == '0' }.not()
+        return input.replace("-", "").all { it == '0' }.not()
     }
 }
