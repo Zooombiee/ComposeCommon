@@ -1,13 +1,14 @@
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    kotlin("android")
+    // kotlin("android")
     id("com.android.library")
-    id("kotlinx-serialization")
-    id("com.google.devtools.ksp")
-//    alias(libs.plugins.com.android.application)
-//    alias(libs.plugins.org.jetbrains.kotlin.android)
-//    alias(libs.plugins.plugin.serialization)
-//    alias(libs.plugins.build.ksp)
+    // id("kotlinx-serialization")
+    // id("com.google.devtools.ksp")
+    // alias(libs.plugins.com.android.application)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.plugin.serialization)
+    alias(libs.plugins.build.ksp)
+    // alias(libs.plugins.hilt.plugins)
 }
 
 android {
@@ -28,14 +29,18 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("boolean", "IS_DEBUG", "Boolean.parseBoolean(\"false\")")
+        }
+        debug {
+            buildConfigField("boolean", "IS_DEBUG", "Boolean.parseBoolean(\"true\")")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
     buildFeatures {
@@ -44,6 +49,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.kotlin.compiler.get()
     }
+
 }
 
 dependencies {
@@ -63,6 +69,10 @@ dependencies {
     api(libs.bundles.koin)
     api(libs.bundles.kotlin)
     api(libs.bundles.nav.compose)
+
+    // api(libs.hilt.android)
+    // api(libs.hilt.navigation.compose)
+    // ksp(libs.hilt.ksp)
 
 
     implementation(libs.mmkv)
