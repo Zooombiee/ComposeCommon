@@ -8,6 +8,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.Inet4Address
+import java.net.Inet6Address
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
@@ -297,4 +298,29 @@ class NetworkAddressUtils {
         }
         return null
     }
+
+    /**
+     * Is i pv 6 available.
+     * 初步判断ipv6是否可用
+     * @return
+     */
+    fun isIPv6Available(): Boolean {
+        try {
+            val networkInterfaces = NetworkInterface.getNetworkInterfaces()
+            while (networkInterfaces.hasMoreElements()) {
+                val networkInterface = networkInterfaces.nextElement()
+                val addresses = networkInterface.inetAddresses
+                while (addresses.hasMoreElements()) {
+                    val address = addresses.nextElement()
+                    if (address is Inet6Address && !address.isLoopbackAddress()&& (!address.isLinkLocalAddress())) {
+                        return true
+                    }
+                }
+            }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        return false
+    }
+
 }

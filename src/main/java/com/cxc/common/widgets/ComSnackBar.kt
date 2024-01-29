@@ -192,7 +192,30 @@ fun ComSnackBarData.show() = apply {
     }
 }
 
-fun Any.comSnackBar(
+//fun Any.comSnackBar(
+//    duration: Long = ComSnackBar.SHORT,
+//    onCancel: ((ComSnackBarData) -> Unit)? = null,
+//    onConfirm: ((ComSnackBarData) -> Unit)? = null,
+//    cancelLabel: String = stringRes(R.string.common_cancel),
+//    confirmLabel: String = stringRes(R.string.common_confirm),
+//    onDismiss: ((ComSnackBarData) -> Unit)? = null,
+//    animationDuration: Int = 250,
+//    modifier: Modifier = Modifier.padding(8.dp, 8.dp, 8.dp, 0.dp),
+//    content: @Composable ((ComSnackBarData) -> Unit)? = null,
+//) = ComSnackBarData(
+//    mutableStateOf(toString()),
+//    modifier,
+//    duration,
+//    onCancel,
+//    onConfirm,
+//    cancelLabel,
+//    confirmLabel,
+//    onDismiss,
+//    animationDuration,
+//    content = content
+//).apply { show() }
+
+fun String.comSnackBar(
     duration: Long = ComSnackBar.SHORT,
     onCancel: ((ComSnackBarData) -> Unit)? = null,
     onConfirm: ((ComSnackBarData) -> Unit)? = null,
